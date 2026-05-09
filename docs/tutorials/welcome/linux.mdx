@@ -6,7 +6,7 @@ sidebar_position: 6
 
 Note: Everything here should also work for L4D1 (1.0 or Newest), but is untested.
 
-## Method 1 (easy way, directly in the bat)
+## Method 1, old versions (easy way, directly in the bat)
 
 *Use this method unless you have a specific reason not to*
 
@@ -29,18 +29,19 @@ Note: Skytis tried this previously (around July/August 2024) with aciidz' assist
     * `start livesplit\Livesplit.exe`
 * Add `Start L4D2.2000.bat` as Non-Steam game to Steam
   * Either add some other .exe then edit it to point to the .bat or change the filter when browsing the file to add to show all files
+  * Change the "Start in" to the folder with your left4dead2.exe, for example `/home/skytis/Games/L4D2 2.0.0.0/Left 4 Dead 2/`
 * Under Compatibility force a specific compatibility tool select a Proton version (see Proton section below, the default will very likely cause issues)
 * Launch the bat-Steam-game
 * Wait for the game and LiveSplit to start
 * Verify that SST works (check for the console output or see if sst commands can be autocompleted)
-  * If it crashes or SST doesn't work, check the SST Issuessection of this guide
+  * If it crashes or SST doesn't work, check the SST Issues section of this guide
 * Configure LiveSplit and verify that it works
 
 Notes
 
 * Fonts don't work correctly, so stuff looks a little weird (feel free to try to fix this)
 
-## Method 2 (complicated way, SteamTinkerLaunch)
+## Method 2, old versions (complicated way, SteamTinkerLaunch)
 
 *Use this method if method 1 doesn't work or if you know what you're doing and want to tinker with more stuff*
 
@@ -58,6 +59,7 @@ Tested by Skytis on Kubuntu 24.04 LTS (x11) on 2024-11-02 with the latest versio
   * Restart Steam
 * Add `Start L4D2.2000.bat` as Non-Steam game to Steam
   * Either add some other .exe then edit it to point to the .bat or change the filter when browsing the file to add to show all files
+  * Change the "Start in" to the folder with your left4dead2.exe, for example `/home/skytis/Games/L4D2 2.0.0.0/Left 4 Dead 2/`
 * Under Compatibility force a specific compatibility tool: Steam Tinker Launch
 * Launch the bat-Steam-game
 * In the STL window click the `MAIN MENU` button (you have 2s to do this, then the game is automatically launched)
@@ -81,6 +83,56 @@ Notes
 * If you launch the bat-Steam-game and you don't get the STL launch dialog (where you can go to `MAIN MENU`), close LiveSplit and the game, then start `Steam Tinker Launch (Settings)` to edit stuff. It should have automatically selected the game you last launched (so the bat-Steam-game)
 * Fonts don't work correctly, so stuff looks a little weird (feel free to try to fix this)
 * Sometimes LiveSplit doesn't start. No clue why
+
+## Newest version, method 1 (easy way, directly in the bat)
+
+This is only needed if you want to use LiveSplit with the autosplitter while speedrunning on newest
+
+Tested by Skytis on Kubuntu 25.10 (Wayland) on 2026-05-08 GE-Proton9-11
+Note that you can't play on secure servers with the Windows version via Proton. You have to use the Linux version for that. Unfortunately cannot easily have the newest Windows and Linux version at the same time
+
+### Steps
+
+* Download the newest version of Left 4 Dead 2 via Steam (simply download the game like you normally would)
+* Download any old version from the Discord server
+* Set the compatibility to any Proton version (this makes Steam download the Windows-specific files, for example the .exe)
+* Acquire LiveSplit, unzip somewhere
+* Copy the SST folder from an old version download to `<Steam folder>/steamapps/common/` (I believe it needs to be one level above the Left 4 Dead 2 folder)
+* Copy `SourceSpeedrunTools.vdf` from the old version (for example `L4D2 2.0.0.0/Left 4 Dead 2/left4dead2/addons/SourceSpeedrunTools.vdf`)  to `<Steam folder>/steamapps/common/Left 4 Dead 2/left4dead2/addons/`
+* Create `Start L4D2.newest.bat`
+  * In my case there's a folder called "Games" which has the folders "L4D2 Newest" (this contains `Start L4D2.newest.bat`) and "livesplit" (this contains `LiveSplit.exe`)
+  * Change the `cd` lines so they point to your L4D2 newest and to your LiveSplit
+```@echo off
+
+cd "%~dp0"
+call SST\update.bat
+
+set GAME_PARAMS=
+if not exist game-params.txt goto noparams
+setlocal EnableDelayedExpansion
+:: append each line in the file to the command line
+for /f "delims=" %%l in (game-params.txt) do (
+	set GAME_PARAMS=!GAME_PARAMS! %%l
+)
+setlocal DisableDelayedExpansion
+:noparams
+
+cd "..\..\.steam\debian-installation\steamapps\common\Left 4 Dead 2\"
+start left4dead2.exe -steam -insecure %GAME_PARAMS% %*
+
+cd "..\..\..\..\..\Games\"
+start LiveSplit\LiveSplit.exe```
+
+* Add `Start L4D2.newest.bat` as Non-Steam game to Steam
+  * Add some other program or .exe then edit it to point to the .bat since you can't add the .bat directly
+  * Change the "Start in" to the folder with your left4dead2.exe, for example `/home/skytis/Games/L4D2 Newest/Left 4 Dead 2/`
+* Under Compatibility force a specific compatibility tool select a Proton version (I used GE-Proton9-11)
+* Launch the bat-Steam-game
+* Wait for the game and LiveSplit to start
+* Verify that SST works (check for the console output or see if sst commands can be autocompleted)
+  * If it crashes or SST doesn't work, check if you have the newest version (the auto updater doesn't work on Linux), otherwise ask in the speedrun Discord server
+    * [https://dl.mikes.software/sst/](https://dl.mikes.software/sst/)
+* Configure LiveSplit and verify that it works
 
 ## Proton 
 
